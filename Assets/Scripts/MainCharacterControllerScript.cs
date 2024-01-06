@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
+[RequireComponent(typeof(CharacterController))]
 public class MainCharacterControllerScript : MonoBehaviour
 {
     private CharacterController _characterController;
@@ -13,49 +16,51 @@ public class MainCharacterControllerScript : MonoBehaviour
     private bool _groundedPlayer;
     private float _gravity = -9.81f;
     
+    private PlayerInput _playerInput;
+    private bool _isTriggered = false;
+    private InputAction _closeAction;
+    
     // Velocidad de movimiento y rotación del jugador
     public float playerSpeed = 2.5f;
     public float playerRotation = 0.3f;
-
+    
     private void Start()
     {
         // Obtenemos el character controller
         _characterController = gameObject.GetComponent<CharacterController>();
+        _playerInput = gameObject.GetComponent<PlayerInput>();
+        _playerInput.actions["Movement"].started += startTrigger;
+        _playerInput.actions["Movement"].canceled += stopTrigger;
     }
 
     void Update()
     {
-        
         InitialFall();
-
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            CharacterRotation();
-        }else if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.UpArrow))
+        
+        if (_isTriggered)
         {
             CharacterMovement();
-        }else if (Input.GetKey(KeyCode.Escape))
-        {
-            Application.Quit();
         }
+        
+    }
+
+    private void OnCerrar(InputValue value)
+    {
+        Application.Quit();
     }
 
     /**
-     * Control del movimiento horizontal
+     * Control del movimiento y rotación
      */
     private void CharacterMovement()
     {
-        Vector3 move = new Vector3(0, 0, Input.GetAxis("Vertical"));
-        _characterController.Move(-transform.TransformDirection(move) * Time.deltaTime * playerSpeed);
-    }
-
-    /**
-     * Control de la rotación del personaje
-     */
-    private void CharacterRotation()
-    {
-        Vector3 rotation = new Vector3(0, Input.GetAxis("Horizontal"), 0);
-        _characterController.transform.Rotate(rotation * playerRotation);
+        var inputVector = _playerInput.actions["Movement"].ReadValue<Vector2>();
+        var characterMovementVector = new Vector3(inputVector.x * playerSpeed, 0, inputVector.y * playerSpeed);
+        _characterController.Move(-transform.TransformDirection(characterMovementVector) * playerSpeed * Time.deltaTime);
+        if (inputVector.x != 0)
+        {
+            _characterController.transform.Rotate(new Vector3(0, inputVector.x, 0) * playerRotation);
+        }
     }
 
     /**
@@ -72,5 +77,15 @@ public class MainCharacterControllerScript : MonoBehaviour
 
         _playerVelocity.y += _gravity * Time.deltaTime;
         _characterController.Move(_playerVelocity * Time.deltaTime);
+    }
+
+    public void startTrigger(InputAction.CallbackContext ctx)
+    {
+        _isTriggered = true;
+    }
+    
+    public void stopTrigger(InputAction.CallbackContext ctx)
+    {
+        _isTriggered = false;
     }
 }
