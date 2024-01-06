@@ -43,7 +43,7 @@ public class MainCharacterControllerScript : MonoBehaviour
         }
         
     }
-
+    
     private void OnCerrar(InputValue value)
     {
         Application.Quit();
