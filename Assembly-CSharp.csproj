@@ -206,6 +206,7 @@
      <Folder Include="Assets\Simple Modular Dungeon\Components\Materials\Doorway 005" />
      <Folder Include="Assets\Simple Modular Dungeon\Prefabs\Floors &amp; Stair" />
      <Folder Include="Assets\Simple Modular Dungeon\Components\Materials\Wall 007" />
+     <Folder Include="Assets\Resources" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
      <Folder Include="Assets\TextMesh Pro\Examples &amp; Extras\Prefabs" />
      <Folder Include="Assets\Old Sea Port\EffectExamples\Shared\PhysicsMaterials" />
@@ -237,6 +238,7 @@
      <Folder Include="Assets\Simple Modular Dungeon\Prefabs\Props\Books" />
      <Folder Include="Assets\Old Sea Port\mesh" />
      <Folder Include="Assets\Simple Modular Dungeon\Components\Materials\Wall 003" />
+     <Folder Include="Assets\Resources\Inputs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
      <Folder Include="Assets\Simple Modular Dungeon\Components\Materials\Book 006" />
      <Folder Include="Assets\Simple Modular Dungeon\Components\Materials\Book 009" />
