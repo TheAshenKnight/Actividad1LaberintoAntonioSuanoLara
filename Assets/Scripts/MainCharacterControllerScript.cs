@@ -1,10 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 
 [RequireComponent(typeof(CharacterController))]
 public class MainCharacterControllerScript : MonoBehaviour
@@ -21,8 +16,8 @@ public class MainCharacterControllerScript : MonoBehaviour
     private InputAction _closeAction;
     
     // Velocidad de movimiento y rotación del jugador
-    public float playerSpeed = 2.5f;
-    public float playerRotation = 0.3f;
+    public float playerSpeed = 1.35f;
+    public float playerRotation = 1f;
     
     private void Start()
     {
@@ -55,8 +50,12 @@ public class MainCharacterControllerScript : MonoBehaviour
     private void CharacterMovement()
     {
         var inputVector = _playerInput.actions["Movement"].ReadValue<Vector2>();
-        var characterMovementVector = new Vector3(inputVector.x * playerSpeed, 0, inputVector.y * playerSpeed);
-        _characterController.Move(-transform.TransformDirection(characterMovementVector) * playerSpeed * Time.deltaTime);
+        
+        if (inputVector.y != 0)
+        {
+            var characterMovementVector = new Vector3(inputVector.x * playerSpeed, 0, inputVector.y * playerSpeed);
+            _characterController.Move(-transform.TransformDirection(characterMovementVector) * playerSpeed * Time.deltaTime);
+        }
         if (inputVector.x != 0)
         {
             _characterController.transform.Rotate(new Vector3(0, inputVector.x, 0) * playerRotation);
