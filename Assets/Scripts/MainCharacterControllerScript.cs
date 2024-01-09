@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using ScriptUtility = Unity.VisualScripting.ScriptUtility;
 
 [RequireComponent(typeof(CharacterController))]
 public class MainCharacterControllerScript : MonoBehaviour
@@ -37,6 +38,18 @@ public class MainCharacterControllerScript : MonoBehaviour
             CharacterMovement();
         }
         
+    }
+
+    private void OnAccion(InputValue value)
+    {
+        foreach(GameObject puertaSwitch in GameObject.FindGameObjectsWithTag("PuertaSwitch"))
+        {
+            if (puertaSwitch.GetComponent<BoxCollider>().bounds.Contains(_characterController.transform.position))
+            {
+                var doorSwitchScript = puertaSwitch.GetComponent<DoorSwitchScript>();
+                doorSwitchScript.ActivateDoor();
+            }
+        }
     }
     
     private void OnCerrar(InputValue value)
