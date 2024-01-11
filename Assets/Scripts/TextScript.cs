@@ -6,15 +6,16 @@ using UnityEngine;
 
 public class TextScript : MonoBehaviour
 {
-    private static TextMeshProUGUI textMeshPro;
+    private static TextMeshProUGUI _textMeshPro;
     
-    public static String textBlank = "";
-    public static String textAccion = "Presiona acción para activar";
-    
+    public const string TextBlank = "";
+    public const string TextAccion = "Presiona acción para activar";
+    public const string TextKilled = "Has muerto";
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        textMeshPro = GameObject.Find("TextInfo").GetComponent<TextMeshProUGUI>();
+        _textMeshPro = GameObject.Find("TextInfo").GetComponent<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
@@ -23,8 +24,8 @@ public class TextScript : MonoBehaviour
         
     }
 
-    public static void ChangeText(String text)
+    public static void ChangeText(string text)
     {
-        textMeshPro.SetText(text);
+        _textMeshPro.SetText(text);
     }
 }

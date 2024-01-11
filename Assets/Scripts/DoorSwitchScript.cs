@@ -27,22 +27,20 @@ public class DoorSwitchScript : MonoBehaviour
     {
         // Evento entrar en collider
         if(doorLocked){
-            TextScript.ChangeText(TextScript.textAccion);
+            TextScript.ChangeText(TextScript.TextAccion);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        TextScript.ChangeText(TextScript.textBlank);
+        TextScript.ChangeText(TextScript.TextBlank);
     }
 
     public void ActivateDoor()
     {
-        if (doorLockedObject.activeSelf)
-        {
-            doorLockedObject.SetActive(false);
-            doorLocked = false;
-            TextScript.ChangeText(TextScript.textBlank);
-        }
+        if (!doorLockedObject.activeSelf) return;
+        doorLockedObject.SetActive(false);
+        doorLocked = false;
+        TextScript.ChangeText(TextScript.TextBlank);
     }
 }

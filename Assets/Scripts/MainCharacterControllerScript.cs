@@ -1,11 +1,15 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using ScriptUtility = Unity.VisualScripting.ScriptUtility;
 
 [RequireComponent(typeof(CharacterController))]
 public class MainCharacterControllerScript : MonoBehaviour
 {
     private CharacterController _characterController;
+    private BlackScreenScript _blackScreenScript;
     
     // Necesarios para la caída inicial del personaje
     private Vector3 _playerVelocity;
@@ -25,8 +29,9 @@ public class MainCharacterControllerScript : MonoBehaviour
         // Obtenemos el character controller
         _characterController = gameObject.GetComponent<CharacterController>();
         _playerInput = gameObject.GetComponent<PlayerInput>();
-        _playerInput.actions["Movement"].started += startTrigger;
-        _playerInput.actions["Movement"].canceled += stopTrigger;
+        _playerInput.actions["Movement"].started += StartTrigger;
+        _playerInput.actions["Movement"].canceled += StopTrigger;
+        _blackScreenScript = GameObject.FindWithTag("BlackSquare").GetComponent<BlackScreenScript>();
     }
 
     void Update()
@@ -40,15 +45,24 @@ public class MainCharacterControllerScript : MonoBehaviour
         
     }
 
+    public IEnumerator KillCharacter(String message)
+    {
+        _isTriggered = false;
+        _playerInput.enabled = false;
+        TextScript.ChangeText(message);
+        StartCoroutine(_blackScreenScript.FadeInOut(true, 3));
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     private void OnAccion(InputValue value)
     {
-        foreach(GameObject puertaSwitch in GameObject.FindGameObjectsWithTag("PuertaSwitch"))
+        foreach(var puertaSwitch in GameObject.FindGameObjectsWithTag("PuertaSwitch"))
         {
-            if (puertaSwitch.GetComponent<BoxCollider>().bounds.Contains(_characterController.transform.position))
-            {
-                var doorSwitchScript = puertaSwitch.GetComponent<DoorSwitchScript>();
-                doorSwitchScript.ActivateDoor();
-            }
+            if (!puertaSwitch.GetComponent<BoxCollider>().bounds
+                    .Contains(_characterController.transform.position)) continue;
+            var doorSwitchScript = puertaSwitch.GetComponent<DoorSwitchScript>();
+            doorSwitchScript.ActivateDoor();
         }
     }
     
@@ -81,6 +95,8 @@ public class MainCharacterControllerScript : MonoBehaviour
      */
     private void InitialFall()
     {
+        StartCoroutine(_blackScreenScript.FadeInOut(false, 1));
+        
         _groundedPlayer = _characterController.isGrounded;
         if (_groundedPlayer && _playerVelocity.y < 0)
         {
@@ -91,12 +107,12 @@ public class MainCharacterControllerScript : MonoBehaviour
         _characterController.Move(_playerVelocity * Time.deltaTime);
     }
 
-    public void startTrigger(InputAction.CallbackContext ctx)
+    public void StartTrigger(InputAction.CallbackContext ctx)
     {
         _isTriggered = true;
     }
     
-    public void stopTrigger(InputAction.CallbackContext ctx)
+    public void StopTrigger(InputAction.CallbackContext ctx)
     {
         _isTriggered = false;
     }
