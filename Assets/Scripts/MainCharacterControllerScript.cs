@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -45,7 +46,7 @@ public class MainCharacterControllerScript : MonoBehaviour
         
     }
 
-    public IEnumerator KillCharacter(String message)
+    public IEnumerator KillCharacter(string message)
     {
         _isTriggered = false;
         _playerInput.enabled = false;
@@ -63,6 +64,13 @@ public class MainCharacterControllerScript : MonoBehaviour
                     .Contains(_characterController.transform.position)) continue;
             var doorSwitchScript = puertaSwitch.GetComponent<DoorSwitchScript>();
             doorSwitchScript.ActivateDoor();
+        }
+        
+        foreach(var chest in GameObject.FindGameObjectsWithTag("Chest"))
+        {
+            if (!chest.GetComponent<BoxCollider>().bounds
+                    .Contains(_characterController.transform.position)) continue;
+            StartCoroutine(KillCharacter(TextScript.TextKilled));
         }
     }
     
@@ -116,4 +124,15 @@ public class MainCharacterControllerScript : MonoBehaviour
     {
         _isTriggered = false;
     }
+
+    public IEnumerator FinishGame()
+    {
+        _isTriggered = false;
+        _playerInput.enabled = false;
+        TextScript.ChangeText(TextScript.TextFinish);
+        StartCoroutine(_blackScreenScript.FadeInOut(true, 3));
+        yield return new WaitForSeconds(5);
+        Application.Quit();
+    }
+    
 }

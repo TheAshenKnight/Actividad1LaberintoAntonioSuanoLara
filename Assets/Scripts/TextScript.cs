@@ -11,6 +11,7 @@ public class TextScript : MonoBehaviour
     public const string TextBlank = "";
     public const string TextAccion = "Presiona acción para activar";
     public const string TextKilled = "Has muerto";
+    public const string TextFinish = "Has encontrado la salida, enhorabuena.";
 
     // Start is called before the first frame update
     private void Start()
